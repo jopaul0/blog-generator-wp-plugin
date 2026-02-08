@@ -36,7 +36,7 @@ class Gemini_API {
      */
     public static function send_to_gemini($final_prompt) {
         $api_key = get_option('gemini_api_token');
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $api_key;
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" . $api_key;
 
         $payload = [
             "contents" => [
@@ -60,6 +60,7 @@ class Gemini_API {
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
+        echo '<pre>'; print_r($body); echo '</pre>';
         $final_text = isset($body['candidates'][0]['content']['parts'][0]['text']) ? $body['candidates'][0]['content']['parts'][0]['text'] : null;
 
         if (!$final_text) {
