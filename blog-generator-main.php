@@ -18,7 +18,7 @@ require_once GEMINI_PLUGIN_PATH . 'core/class-api-gemini.php';
 // Função de ativação
 function blog_generator_initialize()
 {
-    // Template padrão em formato JSON (com as chaves em inglês que definimos)
+    // Template padrão em formato JSON
     $default_template = '{
   "persona": "Aja como um redator sênior especializado no nicho do site {site_name}.",
   "directives": {
