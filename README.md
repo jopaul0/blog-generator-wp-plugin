@@ -53,7 +53,7 @@ git clone https://github.com/jopaul0/blog-generator-wordpress.git
 
 4. Acesse **Blog Generator** e gere seu primeiro artigo
 
-## 📝 Projeto Base
+## Projeto Base
 
 Este plugin foi desenvolvido a partir do protótipo [BlogGenerator (Flask)](https://github.com/jopaul0/blog-generator-prototipo), adaptando a arquitetura para o ecossistema WordPress.
 
