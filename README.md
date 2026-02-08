@@ -28,7 +28,7 @@ Este é um plugin profissional para WordPress desenvolvido para automatizar a cr
 
 ## Estrutura do Projeto
 
-´´´bash
+```bash
 blog-generator/
 ├── admin/
 │   ├── generator-page.php    # Interface de geração de conteúdo
@@ -36,7 +36,7 @@ blog-generator/
 ├── core/
 │   └── class-api-gemini.php  # Lógica de conexão e criação de posts
 └── blog-generator-main.php   # Arquivo principal e ativação
-´´´
+```
 
 ---
 
