@@ -2,7 +2,7 @@
 
 > Plugin WordPress para geração automatizada de conteúdo com IA
 
-![Status](https://img.shields.io/badge/status-ativo-brightgreen)
+![Status](https://img.shields.io/badge/status-desenvolvimento-yellow)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-blue)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue)
 
