@@ -60,7 +60,6 @@ class Gemini_API {
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
-        echo '<pre>'; print_r($body); echo '</pre>';
         $final_text = isset($body['candidates'][0]['content']['parts'][0]['text']) ? $body['candidates'][0]['content']['parts'][0]['text'] : null;
 
         if (!$final_text) {
