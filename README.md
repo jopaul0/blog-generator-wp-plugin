@@ -59,7 +59,7 @@ Este plugin foi desenvolvido a partir do protótipo [BlogGenerator (Flask)](http
 
 ---
 
-## 👤 Autor
+## Autor
 
 **João Paulo Santos**
 
