@@ -10,28 +10,51 @@ class Gemini_API {
      * Prepara o prompt substituindo as variáveis no template JSON.
      */
     public static function build_prompt($theme_user, $min, $max) {
-        $template = get_option('prompt_template');
         $site_name = get_bloginfo('name');
+        $persona   = get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.');
+        $tone      = get_option('ai_tone', 'Profissional e didático.');
 
-        $find = [
-            '{site_name}',
-            '{theme}',
-            '{min}',
-            '{max}'
+        $seo_standards = [
+            "rules" => [
+                "focus_keyword_placement" => "A palavra-chave de foco deve aparecer no início do título SEO e nos primeiros 10% do conteúdo.",
+                "char_limits" => [
+                    "seo_title" => 60,
+                    "meta_description" => 160,
+                    "url_slug" => 75
+                ],
+                "html_format" => "O conteúdo deve ser retornado em HTML sem a tag <body>, usando apenas tags de formatação como <p>, <h2>, <h3>, <ul> e <table>."
+            ]
         ];
 
-        $to_replace = [
-            $site_name,
-            $theme_user,
-            $min,
-            $max
+        // Monta o array que será convertido em JSON
+        $prompt_structure = [
+            "persona" => str_replace('{site_name}', $site_name, $persona),
+            "directives" => [
+                "tone" => $tone,
+                "seo_optimization" => $seo_standards,
+                "instructions" => "Crie um artigo completo sobre o tema: $theme_user."
+            ],
+            "constraints" => [
+                "min_words" => intval($min),
+                "max_words" => intval($max)
+            ],
+            "output_schema" => [
+                "h1_title"         => "O título H1 do post",
+                "article_content"  => "O texto do artigo em HTML",
+                "summary"          => "Um resumo de 2 frases",
+                "seo_title"        => "Título SEO (máx 60 caracteres)",
+                "meta_description" => "Meta descrição (máx 160 caracteres)",
+                "url_slug"         => "Slug amigável baseado no título",
+                "focus_keyword"    => "A palavra-chave principal",
+                "tags"             => "Lista de 5 tags separadas por vírgula"
+            ]
         ];
 
-        $final_prompt = str_replace($find, $to_replace, $template);
+        $final_json = json_encode($prompt_structure, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
-        $instruction = "\n\nResponda estritamente com um objeto JSON seguindo o 'output_schema' fornecido. Não adicione saudações ou explicações.";
+        $instruction = "\n\nResponda estritamente com o objeto JSON acima. Não adicione texto antes ou depois do JSON.";
 
-        return $final_prompt . $instruction;
+        return $final_json . $instruction;
     }
 
     /**
