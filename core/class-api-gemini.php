@@ -12,6 +12,7 @@ class Gemini_API {
         $persona   = get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.');
         $tone      = get_option('ai_tone', 'Profissional e didático.');
 
+        // REGRAS FIXAS
         $seo_standards = [
             "rules" => [
                 "focus_keyword_placement" => "A palavra-chave de foco deve aparecer no início do título SEO e nos primeiros 10% do conteúdo.",
@@ -20,11 +21,25 @@ class Gemini_API {
                     "meta_description" => 160,
                     "url_slug" => 75
                 ],
-                "html_format" => "O conteúdo deve ser retornado em HTML sem a tag <body>, usando apenas tags de formatação como <p>, <h2>, <h3>, <ul> e <table>."
+                "html_format" => "O conteúdo deve ser retornado em HTML sem a tag <body>, usando apenas tags de formatação como <p>, <h2>, <h3>, <ul> e <table>.",
+                "table_format" => "As tabelas devem ser retornadas em HTML com CSS inline para estilização básica."
             ]
         ];
 
-        // Monta o array que será convertido em JSON
+        // ESQUEMA DE SAÍDA FIXO (O usuário não altera)
+        $output_schema = [
+            "h1_title"         => "O título H1 do post",
+            "article_content"  => "O texto do artigo completo em HTML",
+            "summary"          => "Um resumo de 2 frases",
+            "seo_title"        => "Título SEO otimizado (máx 60 caracteres)",
+            "meta_description" => "Meta descrição (máx 160 caracteres)",
+            "url_slug"         => "Slug amigável baseado no título",
+            "focus_keyword"    => "A palavra-chave principal identificada",
+            "secondary_keywords" => "Lista com 4 palavras-chave secundárias",
+            "tags"             => "Lista de 5 tags relevantes separadas por vírgula"
+        ];
+
+        // MONTAGEM DO ARRAY FINAL
         $prompt_structure = [
             "persona" => str_replace('{site_name}', $site_name, $persona),
             "directives" => [
@@ -36,20 +51,10 @@ class Gemini_API {
                 "min_words" => intval($min),
                 "max_words" => intval($max)
             ],
-            "output_schema" => [
-                "h1_title"         => "O título H1 do post",
-                "article_content"  => "O texto do artigo em HTML",
-                "summary"          => "Um resumo de 2 frases",
-                "seo_title"        => "Título SEO (máx 60 caracteres)",
-                "meta_description" => "Meta descrição (máx 160 caracteres)",
-                "url_slug"         => "Slug amigável baseado no título",
-                "focus_keyword"    => "A palavra-chave principal",
-                "tags"             => "Lista de 5 tags separadas por vírgula"
-            ]
+            "output_schema" => $output_schema
         ];
 
         $final_json = json_encode($prompt_structure, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
         $instruction = "\n\nResponda estritamente com o objeto JSON acima. Não adicione texto antes ou depois do JSON.";
 
         return $final_json . $instruction;
