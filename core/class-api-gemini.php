@@ -17,7 +17,7 @@ class Gemini_API
         // REGRAS FIXAS
         $seo_standards = [
             "rules" => [
-                "focus_keyword_placement" => "A palavra-chave de foco deve aparecer no início do título SEO e nos primeiros 10% do conteúdo.",
+                "focus_keyword_placement" => "A palavra-chave de foco deve aparecer no início do título SEO, nos primeiros 10% do conteúdo, na metadescrição e na url. Além de que ela deverá ter uma densidade boa no texto (Aparecer mais de 1 vez, mas também não exagerar).",
                 "char_limits" => [
                     "seo_title" => 60,
                     "meta_description" => 160,
@@ -33,7 +33,7 @@ class Gemini_API
             "h1_title" => "O título H1 do post",
             "article_content" => "O texto do artigo completo em HTML",
             "summary" => "Um resumo de 2 frases",
-            "seo_title" => "Título SEO otimizado (máx 60 caracteres)",
+            "seo_title" => "Título SEO otimizado (máx 60 caracteres) e deve conter pelo menos 1 número.",
             "meta_description" => "Meta descrição (máx 160 caracteres)",
             "url_slug" => "Slug amigável baseado no título",
             "focus_keyword" => "A palavra-chave principal identificada",
