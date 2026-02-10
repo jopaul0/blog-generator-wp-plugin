@@ -2,9 +2,9 @@
 
 class Validator
 {
+    // Remove caracteres que podem quebrar o JSON antes de enviar para a API
     public static function sanitize_json_input($input)
     {
-        // Remove caracteres que podem quebrar o JSON antes de enviar para a API
         return str_replace(['"', "\n", "\r"], ["'", ' ', ' '], $input);
     }
 

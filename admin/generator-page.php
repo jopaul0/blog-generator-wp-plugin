@@ -36,7 +36,7 @@ function render_blog_generator() {
             $prompt = Gemini_API::build_prompt($theme, $min, $max);
 
             // Envia para a API e recebe o JSON
-            $response_data = Gemini_API::send_to_gemini($prompt);
+            $response_data = Gemini_API::send_to_api($prompt);
 
             if ($response_data && !isset($response_data['error'])) {
                 // Cria o rascunho usando o método que criamos na classe
