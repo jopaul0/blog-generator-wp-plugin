@@ -141,6 +141,12 @@ class Gemini_API
             update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
             update_post_meta($post_id, 'rank_math_focus_keyword', $data['focus_keyword']);
         }
+        elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
+            // All in One SEO (AIOSEO)
+            update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
+            update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
+            update_post_meta($post_id, '_aioseo_keywords', $data['focus_keyword']);
+        }
 
         if (!empty($data['tags'])) {
             wp_set_post_tags($post_id, $data['tags']);
