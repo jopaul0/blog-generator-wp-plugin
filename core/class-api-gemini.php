@@ -7,7 +7,7 @@ class Gemini_API {
      * Prepara o prompt substituindo as variáveis no template JSON.
      */
     public static function build_prompt($theme_user, $min, $max) {
-        $template = get_option('gemini_prompt_template');
+        $template = get_option('prompt_template');
         $site_name = get_bloginfo('name');
 
         $find = [
