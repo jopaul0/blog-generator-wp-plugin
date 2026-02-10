@@ -8,10 +8,10 @@ Author: João Paulo Santos
 
 if (!defined('ABSPATH')) exit;
 
-define('GEMINI_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('BLOG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 
-require_once GEMINI_PLUGIN_PATH . 'admin/navigation.php';
-require_once GEMINI_PLUGIN_PATH . 'core/class-api-gemini.php';
+require_once BLOG_PLUGIN_PATH . 'admin/navigation.php';
+require_once BLOG_PLUGIN_PATH . 'core/class-api-gemini.php';
 
 
 // Função de ativação
@@ -43,7 +43,7 @@ function blog_generator_initialize()
 }';
 
     // Adiciona ao banco se ainda não existir
-    add_option('gemini_prompt_template', $default_template);
+    add_option('prompt_template', $default_template);
     add_option('gemini_api_token', '');
 }
 

@@ -2,8 +2,8 @@
 
 if (!defined('ABSPATH')) exit;
 
-require_once GEMINI_PLUGIN_PATH . 'admin/generator-page.php';
-require_once GEMINI_PLUGIN_PATH . 'admin/settings-page.php';
+require_once BLOG_PLUGIN_PATH . 'admin/generator-page.php';
+require_once BLOG_PLUGIN_PATH . 'admin/settings-page.php';
 
 add_action('admin_menu', function() {
     add_menu_page(
