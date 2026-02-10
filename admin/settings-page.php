@@ -2,22 +2,9 @@
 if (!defined('ABSPATH')) exit;
 
 /**
- * Adiciona o submenu de configurações sob o menu "Settings" do WordPress.
- */
-add_action('admin_menu', function() {
-    add_options_page(
-        'Gemini Generator Settings', // Título da página
-        'Gemini Config',             // Nome no menu
-        'manage_options',            // Capacidade necessária (admin)
-        'gemini-settings',           // Slug da página
-        'render_gemini_settings'     // Função de callback
-    );
-});
-
-/**
  * Renderiza o formulário de configurações.
  */
-function render_gemini_settings() {
+function render_settings() {
     ?>
     <div class="wrap">
         <h1>Gemini API Settings</h1>

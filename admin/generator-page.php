@@ -1,19 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-// Adiciona o menu lateral para o Gerador
-add_action('admin_menu', function() {
-    add_menu_page(
-        'Blog Generator',
-        'Blog Generator',
-        'manage_options',
-        'blog-generator',
-        'render_blog_generator',
-        'dashicons-admin-generic',
-        6
-    );
-});
-
 function render_blog_generator() {
     ?>
     <div class="wrap">
