@@ -1,7 +1,5 @@
 <?php
 
-namespace core;
-
 if (!defined('ABSPATH')) exit;
 
 class Gemini_API {

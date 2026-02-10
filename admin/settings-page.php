@@ -10,7 +10,7 @@ function render_settings() {
         <h1>Configurações do Blog Generator</h1>
         <form method="post" action="options.php">
             <?php
-            settings_fields('gemini_settings_group');
+            settings_fields('blog_generator_settings_group');
             ?>
             <table class="form-table">
                 <tr>
@@ -23,7 +23,7 @@ function render_settings() {
                 <tr>
                     <th scope="row">Persona da IA</th>
                     <td>
-                        <textarea name="gemini_persona" rows="3" class="large-text"><?php echo esc_textarea(get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.')); ?></textarea>
+                        <textarea name="ai_persona" rows="3" class="large-text"><?php echo esc_textarea(get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.')); ?></textarea>
                         <p class="description">Defina como a IA deve se comportar.</p>
                     </td>
                 </tr>
@@ -31,7 +31,7 @@ function render_settings() {
                 <tr>
                     <th scope="row">Tom de Voz</th>
                     <td>
-                        <input type="text" name="gemini_tone" value="<?php echo esc_attr(get_option('ai_tone', 'Profissional e didático')); ?>" class="regular-text" />
+                        <input type="text" name="ai_tone" value="<?php echo esc_attr(get_option('ai_tone', 'Profissional e didático')); ?>" class="regular-text" />
                     </td>
                 </tr>
             </table>
@@ -47,6 +47,6 @@ function render_settings() {
  */
 add_action('admin_init', function() {
     register_setting('blog_generator_settings_group', 'gemini_api_token');
-    register_setting('blog_generator_group', 'ai_persona');
-    register_setting('blog_generator_group', 'ai_tone');
+    register_setting('blog_generator_settings_group', 'ai_persona');
+    register_setting('blog_generator_settings_group', 'ai_tone');
 });

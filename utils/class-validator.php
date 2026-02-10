@@ -1,7 +1,5 @@
 <?php
 
-namespace utils;
-
 class Validator
 {
     public static function sanitize_json_input($input)
