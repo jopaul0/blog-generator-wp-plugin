@@ -11,43 +11,45 @@ class Gemini_API
     public static function build_prompt($theme_user, $min, $max)
     {
         $site_name = get_bloginfo('name');
-        $persona = get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.');
-        $tone = get_option('ai_tone', 'Profissional e didático.');
+        $persona = get_option('ai_persona', 'Act as a senior copywriter specialized in the niche of the website {site_name}.');
+        $tone = get_option('ai_tone', 'Professional and educational.');
+        $language = get_option('ai_language', 'Portuguese');
 
-        // REGRAS FIXAS
+        // FIXED RULES (In English for better AI performance)
         $seo_standards = [
             "rules" => [
-                "focus_keyword_placement" => "A palavra-chave de foco deve aparecer no início do título SEO, nos primeiros 10% do conteúdo, na metadescrição e na url. Além de que ela deverá ter uma densidade boa no texto (Aparecer mais de 1 vez, mas também não exagerar).",
+                "focus_keyword_placement" => "The focus keyword must appear at the beginning of the SEO title, in the first 10% of the content, in the meta description, and in the URL. It should have a good density (appearing more than once, but not overused).",
                 "char_limits" => [
                     "seo_title" => 60,
                     "meta_description" => 160,
                     "url_slug" => 75
                 ],
-                "html_format" => "O conteúdo deve ser retornado em HTML sem a tag <body>, usando apenas tags de formatação como <p>, <h2>, <h3>, <ul> e <table>.",
-                "table_format" => "As tabelas devem ser retornadas em HTML com CSS inline para estilização básica."
+                "html_format" => "Content must be returned in HTML without the <body> tag, using only formatting tags like <p>, <h2>, <h3>, <ul>, and <table>.",
+                "table_format" => "Tables must be returned in HTML with inline CSS for basic styling."
             ]
         ];
 
-        // ESQUEMA DE SAÍDA FIXO (O usuário não altera)
+        // FIXED OUTPUT SCHEMA
         $output_schema = [
-            "h1_title" => "O título H1 do post",
-            "article_blocks" => "Um array de strings, onde cada item é um parágrafo ou um subtítulo (H2, H3)", // IA envia lista
-            "summary" => "Um resumo de 2 frases",
-            "seo_title" => "Título SEO otimizado",
-            "meta_description" => "Meta descrição",
-            "url_slug" => "Slug amigável",
-            "focus_keyword" => "Palavra-chave principal",
-            "secondary_keywords" => "Lista de palavras-chave secundárias",
-            "tags" => "Tags separadas por vírgula"
+            "h1_title" => "The H1 title of the post",
+            "article_blocks" => "An array of strings, where each item is a paragraph or a subheading (H2, H3)",
+            "summary" => "A 2-sentence summary",
+            "seo_title" => "Optimized SEO title",
+            "meta_description" => "Meta description",
+            "url_slug" => "User-friendly URL slug",
+            "focus_keyword" => "Main focus keyword",
+            "secondary_keywords" => "List of secondary keywords",
+            "tags" => "Tags separated by commas"
         ];
 
-        // MONTAGEM DO ARRAY FINAL
+        // FINAL PROMPT STRUCTURE
         $prompt_structure = [
             "persona" => str_replace('{site_name}', $site_name, $persona),
             "directives" => [
                 "tone" => $tone,
                 "seo_optimization" => $seo_standards,
-                "instructions" => "Crie um artigo completo sobre o tema: $theme_user."
+                "instructions" => "Create a complete article about the topic: $theme_user.",
+                "language_rule" => "IMPORTANT: Generate all content within the JSON fields (title, blocks, summary, tags, etc.) in $language." // Força o idioma de saída
             ],
             "constraints" => [
                 "min_words" => intval($min),
@@ -57,7 +59,9 @@ class Gemini_API
         ];
 
         $final_json = json_encode($prompt_structure, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        $instruction = "\n\nResponda estritamente com o objeto JSON acima. Não adicione texto antes ou depois do JSON.";
+
+        // Final instruction in English with language reinforcement
+        $instruction = "\n\nRespond strictly with the JSON object above. All field values must be written in $language. Do not add any text before or after the JSON.";
 
         return $final_json . $instruction;
     }
@@ -102,7 +106,7 @@ class Gemini_API
     }
 
     /**
-     * Processa o JSON recebido (com chaves em inglês) e cria o rascunho no WordPress.
+     * Processa o JSON recebido e cria o rascunho no WordPress.
      */
 
     public static function create_draft_post($data)

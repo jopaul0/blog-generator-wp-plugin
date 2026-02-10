@@ -32,14 +32,14 @@ function render_blog_generator() {
 
             echo "<h3>Processing with Gemini... Please wait.</h3>";
 
-            // 1. Constrói o prompt usando as variáveis do usuário
+            // Constrói o prompt usando as variáveis do usuário
             $prompt = Gemini_API::build_prompt($theme, $min, $max);
 
-            // 2. Envia para a API e recebe o JSON
+            // Envia para a API e recebe o JSON
             $response_data = Gemini_API::send_to_gemini($prompt);
 
             if ($response_data && !isset($response_data['error'])) {
-                // 3. Cria o rascunho usando o método que criamos na classe
+                // Cria o rascunho usando o método que criamos na classe
                 $post_id = Gemini_API::create_draft_post($response_data);
 
                 if ($post_id) {

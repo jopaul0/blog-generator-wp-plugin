@@ -26,7 +26,7 @@ function render_settings()
                     <th scope="row">Persona da IA</th>
                     <td>
                         <textarea name="ai_persona" rows="3"
-                                  class="large-text"><?php echo esc_textarea(get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.')); ?></textarea>
+                                  class="large-text"><?php echo esc_textarea(get_option('ai_persona', 'Act as a senior copywriter specialized in the niche of the website {site_name}.')); ?></textarea>
                         <p class="description">Defina como a IA deve se comportar.</p>
                     </td>
                 </tr>
@@ -35,8 +35,22 @@ function render_settings()
                     <th scope="row">Tom de Voz</th>
                     <td>
                         <input type="text" name="ai_tone"
-                               value="<?php echo esc_attr(get_option('ai_tone', 'Profissional e didático')); ?>"
+                               value="<?php echo esc_attr(get_option('ai_tone', 'Professional and educational.')); ?>"
                                class="regular-text"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">Idioma de Geração</th>
+                    <td>
+                        <?php $current_lang = get_option('ai_language', 'Portuguese'); ?>
+                        <select name="ai_language">
+                            <option value="Portuguese" <?php selected($current_lang, 'Portuguese'); ?>>Português</option>
+                            <option value="English" <?php selected($current_lang, 'English'); ?>>English</option>
+                            <option value="Spanish" <?php selected($current_lang, 'Spanish'); ?>>Español</option>
+                            <option value="French" <?php selected($current_lang, 'French'); ?>>Français</option>
+                        </select>
+                        <p class="description">A IA irá gerar o conteúdo final neste idioma.</p>
                     </td>
                 </tr>
 
@@ -69,4 +83,5 @@ add_action('admin_init', function () {
     register_setting('blog_generator_settings_group', 'gemini_api_token');
     register_setting('blog_generator_settings_group', 'ai_persona');
     register_setting('blog_generator_settings_group', 'ai_tone');
+    register_setting('blog_generator_settings_group', 'ai_language');
 });
