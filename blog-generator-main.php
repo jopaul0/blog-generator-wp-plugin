@@ -23,6 +23,7 @@ add_action('init', 'blog_generator_load_textdomain');
 function blog_generator_initialize()
 {
     add_option('gemini_api_token', '');
+    add_option('gemini_model', 'gemini-2.5-flash');
     add_option('ai_persona', 'Act as a senior copywriter specialized in the niche of the website {site_name}.');
     add_option('ai_tone', 'Professional and educational.');
     add_option('ai_language', 'Portuguese');

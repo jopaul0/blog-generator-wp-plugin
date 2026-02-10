@@ -12,7 +12,9 @@ class Gemini_API extends AI
     public static function send_to_api($final_prompt)
     {
         $api_key = get_option('gemini_api_token');
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" . $api_key;
+        $model   = get_option('gemini_model', 'gemini-2.5-flash');
+
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key=" . $api_key;
 
         $payload = [
             "contents" => [

@@ -23,6 +23,20 @@ function render_settings()
                 </tr>
 
                 <tr>
+                    <th scope="row"><?php _e('Gemini Model', 'blog-generator'); ?></th>
+                    <td>
+                        <?php $current_model = get_option('gemini_model', 'gemini-2.5-flash'); ?>
+                        <select name="gemini_model">
+                            <option value="gemini-2.5-flash" <?php selected($current_model, 'gemini-2.5-flash'); ?>>Gemini 2.5 Flash (Recommended)</option>
+                            <option value="gemini-2.5-pro" <?php selected($current_model, 'gemini-2.5-pro'); ?>>Gemini 2.5 Pro (Smarter)</option>
+                            <option value="gemini-3-flash-preview" <?php selected($current_model, 'gemini-3-flash-preview'); ?>>Gemini 3 Flash (Preview)</option>
+                            <option value="gemini-3-pro-preview" <?php selected($current_model, 'gemini-3-pro-preview'); ?>>Gemini 3 Pro (Preview)</option>
+                        </select>
+                        <p class="description"><?php _e('Choose the API template. Use Flash templates for faster speeds.', 'blog-generator'); ?></p>
+                    </td>
+                </tr>
+
+                <tr>
                     <th scope="row"><?php _e('AI Persona', 'blog-generator'); ?></th>
                     <td>
                         <textarea name="ai_persona" rows="3"
@@ -82,6 +96,7 @@ function render_settings()
  */
 add_action('admin_init', function () {
     register_setting('blog_generator_settings_group', 'gemini_api_token');
+    register_setting('blog_generator_settings_group', 'gemini_model');
     register_setting('blog_generator_settings_group', 'ai_persona');
     register_setting('blog_generator_settings_group', 'ai_tone');
     register_setting('blog_generator_settings_group', 'ai_language');
