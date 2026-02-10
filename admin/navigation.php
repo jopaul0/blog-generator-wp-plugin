@@ -6,9 +6,10 @@ require_once BLOG_PLUGIN_PATH . 'admin/generator-page.php';
 require_once BLOG_PLUGIN_PATH . 'admin/settings-page.php';
 
 add_action('admin_menu', function() {
+    // Menu Principal
     add_menu_page(
-        'Blog Generator',
-        'Blog Generator',
+        __('Blog Generator', 'blog-generator'),
+        __('Blog Generator', 'blog-generator'),
         'manage_options',
         'blog-generator',
         'render_blog_generator',
@@ -16,19 +17,21 @@ add_action('admin_menu', function() {
         6
     );
 
+    // Submenu: Gerador
     add_submenu_page(
         'blog-generator',
-        'Generate New Post',
-        'Gerador',
+        __('Generate New Post', 'blog-generator'),
+        __('Generator', 'blog-generator'),
         'manage_options',
         'blog-generator',
         'render_blog_generator'
     );
 
+    // Submenu: Configurações
     add_submenu_page(
         'blog-generator',
-        'Blog Generator Settings',
-        'Configurações',
+        __('Blog Generator Settings', 'blog-generator'),
+        __('Settings', 'blog-generator'),
         'manage_options',
         'blog-generator-settings',
         'render_settings'

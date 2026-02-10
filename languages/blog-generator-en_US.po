@@ -1,0 +1,121 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Blog Generator 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-10 17:15-0300\n"
+"PO-Revision-Date: 2026-02-10 17:16-0300\n"
+"Last-Translator: João Paulo Santos\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+
+#: admin/navigation.php:10 admin/navigation.php:11
+msgid "Blog Generator"
+msgstr "Blog Generator"
+
+#: admin/navigation.php:21
+msgid "Generate New Post"
+msgstr "Generate New Post"
+
+#: admin/navigation.php:22
+msgid "Generator"
+msgstr "Generator"
+
+#: admin/navigation.php:31
+msgid "Blog Generator Settings"
+msgstr "Blog Generator Settings"
+
+#: admin/navigation.php:32
+msgid "Settings"
+msgstr "Settings"
+
+#: admin/generator-page.php:8
+msgid "Generate New Blog Post"
+msgstr "Generate New Blog Post"
+
+#: admin/generator-page.php:13
+msgid "Detailed Theme"
+msgstr "Detailed Theme"
+
+#: admin/generator-page.php:16
+msgid "Describe the topic for the AI..."
+msgstr "Describe the topic for the AI..."
+
+#: admin/generator-page.php:20
+msgid "Min Words"
+msgstr "Min Words"
+
+#: admin/generator-page.php:24
+msgid "Max Words"
+msgstr "Max Words"
+
+#: admin/generator-page.php:28
+msgid "Generate Article"
+msgstr "Generate Article"
+
+#: admin/generator-page.php:40
+msgid "Processing with AI... Please wait."
+msgstr "Processing with AI... Please wait."
+
+#: admin/generator-page.php:54
+msgid "Success!"
+msgstr "Success!"
+
+#: admin/generator-page.php:55
+msgid "Draft created."
+msgstr "Draft created."
+
+#: admin/generator-page.php:57
+msgid "Click here to edit the post."
+msgstr "Click here to edit the post."
+
+#: admin/settings-page.php:11
+msgid "Blog Generator Settings"
+msgstr "Blog Generator Settings"
+
+#: admin/settings-page.php:18
+msgid "Gemini API Token"
+msgstr "Gemini API Token"
+
+#: admin/settings-page.php:26
+msgid "AI Persona"
+msgstr "AI Persona"
+
+#: admin/settings-page.php:29
+msgid "Define how the AI should behave."
+msgstr "Define how the AI should behave."
+
+#: admin/settings-page.php:34
+msgid "Tone of Voice"
+msgstr "Tone of Voice"
+
+#: admin/settings-page.php:42
+msgid "Generation Language"
+msgstr "Generation Language"
+
+#: admin/settings-page.php:52
+msgid "The AI will generate the final content in this language."
+msgstr "The AI will generate the final content in this language."
+
+#: admin/settings-page.php:57
+msgid "SEO Detection"
+msgstr "SEO Detection"
+
+#: admin/settings-page.php:61
+msgid "✔ Yoast SEO detected and active."
+msgstr "✔ Yoast SEO detected and active."
+
+#: admin/settings-page.php:63
+msgid "✔ RankMath detected and active."
+msgstr "✔ RankMath detected and active."
+
+#: admin/settings-page.php:65
+msgid "✔ All in One SEO detected and active."
+msgstr "✔ All in One SEO detected and active."
+
+#: admin/settings-page.php:67
+msgid "⚠ No supported SEO plugin detected. Using WP default."
+msgstr "⚠ No supported SEO plugin detected. Using WP default."

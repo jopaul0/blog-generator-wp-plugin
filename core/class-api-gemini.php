@@ -2,70 +2,14 @@
 
 if (!defined('ABSPATH')) exit;
 
-class Gemini_API
+require_once BLOG_PLUGIN_PATH . 'core/class-ai.php';
+
+class Gemini_API extends AI
 {
-
-    /**
-     * Prepara o prompt substituindo as variáveis no template JSON.
-     */
-    public static function build_prompt($theme_user, $min, $max)
-    {
-        $site_name = get_bloginfo('name');
-        $persona = get_option('ai_persona', 'Aja como um redator sênior especializado no nicho do site {site_name}.');
-        $tone = get_option('ai_tone', 'Profissional e didático.');
-
-        // REGRAS FIXAS
-        $seo_standards = [
-            "rules" => [
-                "focus_keyword_placement" => "A palavra-chave de foco deve aparecer no início do título SEO, nos primeiros 10% do conteúdo, na metadescrição e na url. Além de que ela deverá ter uma densidade boa no texto (Aparecer mais de 1 vez, mas também não exagerar).",
-                "char_limits" => [
-                    "seo_title" => 60,
-                    "meta_description" => 160,
-                    "url_slug" => 75
-                ],
-                "html_format" => "O conteúdo deve ser retornado em HTML sem a tag <body>, usando apenas tags de formatação como <p>, <h2>, <h3>, <ul> e <table>.",
-                "table_format" => "As tabelas devem ser retornadas em HTML com CSS inline para estilização básica."
-            ]
-        ];
-
-        // ESQUEMA DE SAÍDA FIXO (O usuário não altera)
-        $output_schema = [
-            "h1_title" => "O título H1 do post",
-            "article_blocks" => "Um array de strings, onde cada item é um parágrafo ou um subtítulo (H2, H3)", // IA envia lista
-            "summary" => "Um resumo de 2 frases",
-            "seo_title" => "Título SEO otimizado",
-            "meta_description" => "Meta descrição",
-            "url_slug" => "Slug amigável",
-            "focus_keyword" => "Palavra-chave principal",
-            "secondary_keywords" => "Lista de palavras-chave secundárias",
-            "tags" => "Tags separadas por vírgula"
-        ];
-
-        // MONTAGEM DO ARRAY FINAL
-        $prompt_structure = [
-            "persona" => str_replace('{site_name}', $site_name, $persona),
-            "directives" => [
-                "tone" => $tone,
-                "seo_optimization" => $seo_standards,
-                "instructions" => "Crie um artigo completo sobre o tema: $theme_user."
-            ],
-            "constraints" => [
-                "min_words" => intval($min),
-                "max_words" => intval($max)
-            ],
-            "output_schema" => $output_schema
-        ];
-
-        $final_json = json_encode($prompt_structure, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        $instruction = "\n\nResponda estritamente com o objeto JSON acima. Não adicione texto antes ou depois do JSON.";
-
-        return $final_json . $instruction;
-    }
-
     /**
      * Envia a requisição para a API do Gemini.
      */
-    public static function send_to_gemini($final_prompt)
+    public static function send_to_api($final_prompt)
     {
         $api_key = get_option('gemini_api_token');
         $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" . $api_key;
@@ -99,78 +43,5 @@ class Gemini_API
         }
 
         return json_decode($final_text, true);
-    }
-
-    /**
-     * Processa o JSON recebido (com chaves em inglês) e cria o rascunho no WordPress.
-     */
-
-    public static function create_draft_post($data)
-    {
-        if (!$data || isset($data['error'])) {
-            return false;
-        }
-
-        $blocks_html = '';
-
-        if (isset($data['article_blocks']) && is_array($data['article_blocks'])) {
-            foreach ($data['article_blocks'] as $block_text) {
-                $block_text = trim($block_text);
-
-                if (preg_match('/^<h([1-6])>(.*?)<\/h\1>/i', $block_text, $matches)) {
-                    $level = $matches[1];
-                    $content = $matches[2];
-                    $blocks_html .= "<h$level>$content</h$level>";
-                } else {
-                    $content = preg_replace('/^<p>(.*?)<\/p>$/i', '$1', $block_text);
-                    $blocks_html .= "<p>$content</p>";
-                }
-            }
-        } else {
-            $content = isset($data['article_content']) ? $data['article_content'] : '';
-            $blocks_html = "<p>$content</p>";
-        }
-
-        $post_args = [
-            'post_title' => sanitize_text_field($data['h1_title']),
-            'post_content' => $blocks_html,
-            'post_status' => 'draft',
-            'post_excerpt' => sanitize_textarea_field($data['summary']),
-            'post_type' => 'post',
-            'post_name' => sanitize_title($data['url_slug']),
-        ];
-
-        $post_id = wp_insert_post($post_args);
-
-        if (is_wp_error($post_id)) {
-            return false;
-        }
-
-        if (!function_exists('is_plugin_active')) {
-            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-        }
-
-        if (is_plugin_active('wordpress-seo/wp-seo.php')) {
-            // Compatibilidade Yoast SEO
-            update_post_meta($post_id, '_yoast_wpseo_title', $data['seo_title']);
-            update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
-            update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
-        } elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
-            // Compatibilidade RankMath
-            update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
-            update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
-            update_post_meta($post_id, 'rank_math_focus_keyword', $data['focus_keyword']);
-        } elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
-            // All in One SEO (AIOSEO)
-            update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
-            update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
-            update_post_meta($post_id, '_aioseo_keywords', $data['focus_keyword']);
-        }
-
-        if (!empty($data['tags'])) {
-            wp_set_post_tags($post_id, $data['tags']);
-        }
-
-        return $post_id;
     }
 }
