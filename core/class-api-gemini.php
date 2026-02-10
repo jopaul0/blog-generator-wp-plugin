@@ -31,14 +31,14 @@ class Gemini_API
         // ESQUEMA DE SAÍDA FIXO (O usuário não altera)
         $output_schema = [
             "h1_title" => "O título H1 do post",
-            "article_content" => "O texto do artigo completo em HTML",
+            "article_blocks" => "Um array de strings, onde cada item é um parágrafo ou um subtítulo (H2, H3)", // IA envia lista
             "summary" => "Um resumo de 2 frases",
-            "seo_title" => "Título SEO otimizado (máx 60 caracteres) e deve conter pelo menos 1 número.",
-            "meta_description" => "Meta descrição (máx 160 caracteres)",
-            "url_slug" => "Slug amigável baseado no título",
-            "focus_keyword" => "A palavra-chave principal identificada",
-            "secondary_keywords" => "Lista com 4 palavras-chave secundárias",
-            "tags" => "Lista de 5 tags relevantes separadas por vírgula"
+            "seo_title" => "Título SEO otimizado",
+            "meta_description" => "Meta descrição",
+            "url_slug" => "Slug amigável",
+            "focus_keyword" => "Palavra-chave principal",
+            "secondary_keywords" => "Lista de palavras-chave secundárias",
+            "tags" => "Tags separadas por vírgula"
         ];
 
         // MONTAGEM DO ARRAY FINAL
@@ -105,18 +105,39 @@ class Gemini_API
      * Processa o JSON recebido (com chaves em inglês) e cria o rascunho no WordPress.
      */
 
-    public static function create_draft_post($data) {
+    public static function create_draft_post($data)
+    {
         if (!$data || isset($data['error'])) {
             return false;
         }
 
+        $blocks_html = '';
+
+        if (isset($data['article_blocks']) && is_array($data['article_blocks'])) {
+            foreach ($data['article_blocks'] as $block_text) {
+                $block_text = trim($block_text);
+
+                if (preg_match('/^<h([1-6])>(.*?)<\/h\1>/i', $block_text, $matches)) {
+                    $level = $matches[1];
+                    $content = $matches[2];
+                    $blocks_html .= "<h$level>$content</h$level>";
+                } else {
+                    $content = preg_replace('/^<p>(.*?)<\/p>$/i', '$1', $block_text);
+                    $blocks_html .= "<p>$content</p>";
+                }
+            }
+        } else {
+            $content = isset($data['article_content']) ? $data['article_content'] : '';
+            $blocks_html = "<p>$content</p>";
+        }
+
         $post_args = [
-            'post_title'   => sanitize_text_field($data['h1_title']),
-            'post_content' => $data['article_content'],
-            'post_status'  => 'draft',
+            'post_title' => sanitize_text_field($data['h1_title']),
+            'post_content' => $blocks_html,
+            'post_status' => 'draft',
             'post_excerpt' => sanitize_textarea_field($data['summary']),
-            'post_type'    => 'post',
-            'post_name'    => sanitize_title($data['url_slug']),
+            'post_type' => 'post',
+            'post_name' => sanitize_title($data['url_slug']),
         ];
 
         $post_id = wp_insert_post($post_args);
@@ -134,14 +155,12 @@ class Gemini_API
             update_post_meta($post_id, '_yoast_wpseo_title', $data['seo_title']);
             update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
             update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
-        }
-        elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
+        } elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
             // Compatibilidade RankMath
             update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
             update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
             update_post_meta($post_id, 'rank_math_focus_keyword', $data['focus_keyword']);
-        }
-        elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
+        } elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
             // All in One SEO (AIOSEO)
             update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
             update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
