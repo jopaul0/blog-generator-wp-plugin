@@ -19,9 +19,9 @@ abstract class AI
             "rules" => [
                 "focus_keyword_placement" => "The focus keyword must appear at the beginning of the SEO title, in the first 10% of the content, in the meta description, and in the URL. It should have a good density (appearing more than once, but not overused).",
                 "char_limits" => [
-                    "seo_title" => 60,
-                    "meta_description" => 160,
-                    "url_slug" => 75
+                    "seo_title" => 58,
+                    "meta_description" => 156,
+                    "url_slug" => 70
                 ],
                 "html_format" => "Content must be returned in HTML without the <body> tag, using only formatting tags like <p>, <h2>, <h3>, <ul>, and <table>.",
                 "table_format" => "Tables must be returned in HTML with inline CSS for basic styling."
@@ -31,9 +31,10 @@ abstract class AI
         // Saída fixa
         $output_schema = [
             "h1_title" => "The H1 title of the post",
-            "article_blocks" => "An array of strings, where each item is a paragraph or a subheading (H2, H3)",
+            "article_blocks" => "An array of strings (paragraphs/subheadings). If there is a table, insert the placeholder [TABLE_HERE] as a single item in this array at the correct position.",
+            "table_html" => "The complete HTML <table> code. If no table is needed, leave it as an empty string.",
             "summary" => "A 2-sentence summary",
-            "seo_title" => "Optimized SEO title",
+            "seo_title" => "Optimized SEO title and must have a number",
             "meta_description" => "Meta description",
             "url_slug" => "User-friendly URL slug",
             "focus_keyword" => "Main focus keyword",

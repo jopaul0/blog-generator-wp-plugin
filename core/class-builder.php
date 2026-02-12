@@ -13,25 +13,27 @@ class Builder
         $blocks_html = ''; // Para o Gutenberg
         $elementor_elements = []; // Para o Elementor
 
+
         if (isset($data['article_blocks']) && is_array($data['article_blocks'])) {
             foreach ($data['article_blocks'] as $block_text) {
                 $block_text = trim($block_text);
                 if (empty($block_text)) continue;
 
-                // 1. DETECÇÃO DE TABELA (Prioridade Máxima)
-                // Procuramos pela tag <table> em qualquer parte do bloco
-                if (stripos($block_text, '<table') !== false) {
-                    // Gutenberg
-                    $blocks_html .= "\n$block_text\n\n\n";
+                // 1. VERIFICA SE É O LUGAR DA TABELA
+                if (strpos($block_text, '[TABLE_HERE]') !== false && !empty($data['table_html'])) {
+                    $table_code = $data['table_html'];
 
-                    // Elementor
+                    // Gutenberg
+                    $blocks_html .= "\n$table_code\n\n\n";
+
+                    // Elementor (Widget HTML)
                     $elementor_elements[] = self::build_elementor_widget('html', [
-                        'html' => $block_text
+                        'html' => $table_code
                     ]);
-                    continue; // Pula para o próximo bloco sem passar pelos outros testes
+                    continue;
                 }
 
-                // 2. LOGICA PARA CABEÇALHOS (H1-H6)
+                // 2. LÓGICA PARA CABEÇALHOS (H1-H6)
                 if (preg_match('/^<h([1-6])>(.*?)<\/h\1>/i', $block_text, $matches)) {
                     $level = $matches[1];
                     $content = $matches[2];
@@ -42,9 +44,8 @@ class Builder
                         'title' => $content,
                         'header_size' => "h$level"
                     ]);
-                } // 3. LOGICA PARA PARÁGRAFOS (O que sobrou)
+                } // 3. LÓGICA PARA PARÁGRAFOS
                 else {
-                    // Remove tags <p> apenas se elas envolverem o texto todo
                     $content = preg_replace('/^<p>(.*?)<\/p>$/i', '$1', $block_text);
 
                     $blocks_html .= "\n<p>$content</p>\n\n\n";
@@ -55,6 +56,7 @@ class Builder
                 }
             }
         }
+
 
         $post_args = [
             'post_title' => sanitize_text_field($data['h1_title']),
