@@ -47,7 +47,7 @@ function render_blog_generator()
 
             if ($response_data && !isset($response_data['error'])) {
                 // Cria o rascunho usando o método que criamos na classe
-                $post_id = Gemini_API::create_draft_post($response_data);
+                $post_id = Builder::create_draft_post($response_data);
 
                 if ($post_id) {
                     $edit_link = get_edit_post_link($post_id);
