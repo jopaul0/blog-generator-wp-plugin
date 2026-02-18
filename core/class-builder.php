@@ -68,6 +68,9 @@ class Builder
     /**
      * Varre os blocos do artigo e decide como renderizá-los.
      */
+    /**
+     * Varre os blocos do artigo e agrupa conteúdos relacionados em widgets únicos.
+     */
     private static function process_article_content($data, $mode)
     {
         $html_output = '';
@@ -79,45 +82,51 @@ class Builder
                 $block_text = trim($block_text);
                 if (empty($block_text)) continue;
 
-                // 1. Identifica se é Tabela ou Título Principal (H2)
+                // Identificadores de quebra de widget
                 $is_table = (strpos($block_text, '[TABLE_HERE]') !== false);
                 $is_h2 = preg_match('/^<h2>(.*?)<\/h2>/i', $block_text);
 
+                // Se for H2 ou Tabela, precisamos fechar o widget de texto atual e abrir um novo elemento
                 if ($is_table || $is_h2) {
-                    // Se temos texto acumulado, descarrega no widget antes de processar a tabela/H2
-                    if (!empty($current_text_accumulator) && $mode === 'elementor') {
-                        $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+
+                    // 1. Descarrega o texto acumulado antes da quebra (se houver)
+                    if (!empty($current_text_accumulator)) {
+                        if ($mode === 'elementor') {
+                            $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+                        } else {
+                            $html_output .= $current_text_accumulator;
+                        }
                         $current_text_accumulator = '';
                     }
 
+                    // 2. Processa a Tabela ou o H2
                     if ($is_table && !empty($data['table_html'])) {
                         if ($mode === 'elementor') {
                             $elementor_elements[] = self::build_elementor_widget_data('table', $data['table_html'], 2);
                         } else {
-                            $html_output .= self::render_gutenberg_block('table', $data['table_html'], 2);
+                            $html_output .= $data['table_html'];
                         }
-                    } else {
-                        // É um H2
+                    } elseif ($is_h2) {
                         $content = preg_replace('/^<h2>(.*?)<\/h2>$/i', '$1', $block_text);
                         if ($mode === 'elementor') {
                             $elementor_elements[] = self::build_elementor_widget_data('heading', $content, 2);
                         } else {
-                            $html_output .= self::render_gutenberg_block('heading', $content, 2);
+                            $html_output .= "<h2>$content</h2>";
                         }
                     }
                 } else {
-                    // É parágrafo, lista, H3, H4... acumula tudo no mesmo "bloco de texto"
-                    if ($mode === 'elementor') {
-                        $current_text_accumulator .= $block_text . "\n";
-                    } else {
-                        $html_output .= $block_text . "\n";
-                    }
+                    // Se NÃO for H2 nem Tabela (ou seja: p, ul, li, h3, h4), acumula no mesmo bloco
+                    $current_text_accumulator .= $block_text . "\n";
                 }
             }
 
-            // Descarrega o que sobrou no acumulador
-            if (!empty($current_text_accumulator) && $mode === 'elementor') {
-                $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+            // Descarrega qualquer conteúdo que sobrou no acumulador ao final do loop
+            if (!empty($current_text_accumulator)) {
+                if ($mode === 'elementor') {
+                    $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+                } else {
+                    $html_output .= $current_text_accumulator;
+                }
             }
         }
 
