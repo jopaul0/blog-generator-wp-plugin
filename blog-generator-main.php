@@ -2,7 +2,7 @@
 /*
 Plugin Name: Blog Generator
 Description: Automação de posts com IA.
-Version: 1.0
+Version: 0.2
 Author: João Paulo Santos
 */
 
