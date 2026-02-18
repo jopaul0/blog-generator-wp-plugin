@@ -21,7 +21,7 @@ abstract class AI
                 "char_limits" => [
                     "seo_title" => 58,
                     "meta_description" => 156,
-                    "url_slug" => 70
+                    "url_slug" => 68
                 ],
                 "html_format" => "Content must be returned in HTML without the <body> tag, using only formatting tags like <p>, <h2>, <h3>, <ul>, and <table>.",
                 "table_format" => "Tables must be returned in HTML with inline CSS for basic styling."
