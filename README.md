@@ -1,57 +1,69 @@
 # Blog Generator - Gemini AI for WordPress
 
-> Plugin WordPress para geração automatizada de conteúdo com IA
+> Plugin WordPress para geração automatizada de conteúdo utilizando a inteligência artificial do Google Gemini.
 
-![Status](https://img.shields.io/badge/status-desenvolvimento-yellow)
+![Status](https://img.shields.io/badge/status-v0.2-green)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-blue)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue)
 
-## Sobre o Projeto
+## 🚀 Sobre o Projeto (v0.2)
 
-Plugin profissional para WordPress que automatiza a criação de artigos de blog utilizando o Google Gemini AI. Desenvolvido com arquitetura limpa e foco em segurança, este projeto evoluiu do [protótipo Flask](https://github.com/jopaul0/BlogGenerator) para uma solução integrada ao WordPress.
+O **Blog Generator** é uma solução profissional para WordPress que automatiza a criação de artigos completos (Título, Conteúdo, Resumo, SEO e Tags) via Google Gemini API. A versão 0.2 introduz uma arquitetura **MVC (Model-View-Controller)** robusta e suporte inteligente a editores visuais.
 
-## Funcionalidades
+---
 
-- **Geração Automatizada**: Criação completa de artigos (Título, Resumo, Conteúdo, SEO e Tags)
-- **Arquitetura Desacoplada**: Separação entre interface (Admin) e processamento (Core/API)
-- **Template JSON Customizável**: Alteração de tom de voz sem modificar código PHP
-- **Integração SEO**: Suporte nativo para Yoast SEO e RankMath
-- **Segurança**: Sanitização de dados e gerenciamento seguro de API Tokens
+## ✨ Novidades da Versão 0.2
 
-## Tecnologias
+- **Arquitetura MVC**: Separação clara de responsabilidades com as classes `ViewController`, `Builder` e `AI`.
+- **Detecção Automática de Editor**: O plugin identifica se o **Elementor** está ativo e gera o post com widgets nativos do construtor. Caso contrário, utiliza o **Gutenberg**.
+- **Integração SEO Avançada**: Suporte dinâmico para **Yoast SEO**, **RankMath** (com múltiplas palavras-chave) e **All in One SEO**.
+- **Gestão de Segurança**: Implementação de *Nonces* do WordPress e sanitização rigorosa de inputs.
+- **Localização (i18n)**: Suporte completo para traduções em Português, Inglês, Espanhol e Francês.
 
-- **Backend**: PHP 7.4+
-- **CMS**: WordPress 5.0+
-- **IA**: Google Gemini API (2.5 Flash)
-- **Ambiente**: Docker
-- **Dados**: JSON para comunicação com IA
+---
 
-## Estrutura do Projeto
-```
-blog-generator/
-├── admin/
-│   ├── generator-page.php    # Interface de geração
-│   └── settings-page.php     # Configurações
-├── core/
-│   └── class-api-gemini.php  # API e lógica de posts
-└── blog-generator-main.php   # Arquivo principal
-```
+## 🛠️ Tecnologias e Arquitetura
 
-## Como Instalar
+- **Backend**: PHP 7.4+ orientado a objetos.
+- **IA**: Google Gemini API (Modelos 1.5 Flash/Pro e 2.0 suportados via configurações).
+- **Design Patterns**: Implementação inspirada no padrão Controller para manipulação de rotas `admin-post.php`.
 
-1. Clone o repositório em `wp-content/plugins/`
+---
+
+## 📂 Estrutura de Pastas
+
 ```bash
-cd wp-content/plugins/
-git clone https://github.com/jopaul0/blog-generator-wordpress.git
+gerador-gemini-onvale/
+├── admin/               # Views (Interfaces do painel administrativo)
+├── core/                # Lógica de Negócio (API, Construtor de Posts, AI)
+├── languages/           # Arquivos de tradução (.po/.mo)
+├── utils/               # Validadores e auxiliares
+└── blog-generator-main.php # Inicializador do Plugin
 ```
 
-2. Ative o plugin no painel do WordPress
+---
 
-3. Configure em **Configurações > Gemini Config**:
-   - Insira seu API Token do [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Personalize o template JSON (opcional)
+## ⚙️ Como Instalar e Configurar
 
-4. Acesse **Blog Generator** e gere seu primeiro artigo
+1. Faça o download do repositório e extraia em wp-content/plugins/blog-generator-gemini.
+2. Ative o plugin no painel administrativo do WordPress.
+3. Vá em Blog Generator > Settings:
+    * Insira sua Gemini API Token obtida no Google AI Studio.
+    * Escolha o modelo da IA (Flash é recomendado pela velocidade).
+    * Configure a Persona e o Tom de Voz para alinhar a IA ao seu nicho.
+
+---
+
+## 📝 Funcionalidades de IA
+O plugin instrui a IA a retornar um objeto JSON estrito contendo:
+
+* Título H1 e Slug de URL otimizada.
+* Blocos de artigo com formatação HTML (p, h2, h3).
+* Tabelas comparativas automáticas em HTML/CSS.
+* Resumo de 2 frases para o Excerpt do WordPress.
+* Metadados de SEO completos.
+
+---
 
 ## Projeto Base
 
