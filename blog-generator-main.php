@@ -23,6 +23,7 @@ add_action('init', 'blog_generator_load_textdomain');
 
 // Adicionando as submissões de formulários.
 add_action('admin_post_bg_generate_article', ['ViewController', 'handle_submission']);
+add_action('admin_init', ['ViewController', 'register_plugin_settings']);
 
 // Função de ativação
 function blog_generator_initialize()

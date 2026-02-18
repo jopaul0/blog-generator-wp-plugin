@@ -2,6 +2,9 @@
 
 class ViewController
 {
+    /**
+     * Subimissão de geração de artigo
+     */
     public static function handle_submission()
     {
         // Verificação de Segurança (Nonce)
@@ -32,6 +35,17 @@ class ViewController
         } else {
             wp_redirect(admin_url('admin.php?page=blog-generator&bg_message=error'));
         }
-        exit; // Sempre use exit após wp_redirect
+        exit;
+    }
+
+    /**
+     * Registra as configurações que o WP deve aceitar e salvar.
+     */
+    public static function register_plugin_settings() {
+        register_setting('blog_generator_settings_group', 'gemini_api_token');
+        register_setting('blog_generator_settings_group', 'gemini_model');
+        register_setting('blog_generator_settings_group', 'ai_persona');
+        register_setting('blog_generator_settings_group', 'ai_tone');
+        register_setting('blog_generator_settings_group', 'ai_language');
     }
 }

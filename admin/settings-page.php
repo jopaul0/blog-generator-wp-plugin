@@ -2,17 +2,23 @@
 if (!defined('ABSPATH')) exit;
 
 /**
- * Renderiza o formulário de configurações.
+ * Renderiza o formulário de configurações (View).
  */
 function render_settings()
 {
     ?>
     <div class="wrap">
         <h1><?php _e('Blog Generator Settings', 'blog-generator'); ?></h1>
+
         <form method="post" action="options.php">
             <?php
-            settings_fields('blog_generator_settings_group'); //
+            // Gera campos ocultos de segurança e identificação do grupo de opções
+            settings_fields('blog_generator_settings_group');
+
+            // Renderiza as secções registradas para esta página
+            do_settings_sections('blog-generator-settings');
             ?>
+
             <table class="form-table">
                 <tr>
                     <th scope="row"><?php _e('Gemini API Token', 'blog-generator'); ?></th>
@@ -32,7 +38,6 @@ function render_settings()
                             <option value="gemini-3-flash-preview" <?php selected($current_model, 'gemini-3-flash-preview'); ?>>Gemini 3 Flash (Preview)</option>
                             <option value="gemini-3-pro-preview" <?php selected($current_model, 'gemini-3-pro-preview'); ?>>Gemini 3 Pro (Preview)</option>
                         </select>
-                        <p class="description"><?php _e('Choose the API template. Use Flash templates for faster speeds.', 'blog-generator'); ?></p>
                     </td>
                 </tr>
 
@@ -40,7 +45,7 @@ function render_settings()
                     <th scope="row"><?php _e('AI Persona', 'blog-generator'); ?></th>
                     <td>
                         <textarea name="ai_persona" rows="3"
-                                  class="large-text"><?php echo esc_textarea(get_option('ai_persona', 'Act as a senior copywriter specialized in the niche of the website {site_name}.')); ?></textarea>
+                                  class="large-text"><?php echo esc_textarea(get_option('ai_persona')); ?></textarea>
                         <p class="description"><?php _e('Define how the AI should behave.', 'blog-generator'); ?></p>
                     </td>
                 </tr>
@@ -49,7 +54,7 @@ function render_settings()
                     <th scope="row"><?php _e('Tone of Voice', 'blog-generator'); ?></th>
                     <td>
                         <input type="text" name="ai_tone"
-                               value="<?php echo esc_attr(get_option('ai_tone', 'Professional and educational.')); ?>"
+                               value="<?php echo esc_attr(get_option('ai_tone')); ?>"
                                class="regular-text"/>
                     </td>
                 </tr>
@@ -64,40 +69,12 @@ function render_settings()
                             <option value="Spanish" <?php selected($current_lang, 'Spanish'); ?>>Español</option>
                             <option value="French" <?php selected($current_lang, 'French'); ?>>Français</option>
                         </select>
-                        <p class="description"><?php _e('The AI will generate the final content in this language.', 'blog-generator'); ?></p>
-                    </td>
-                </tr>
-
-                <tr>
-                    <th scope="row"><?php _e('SEO Detection', 'blog-generator'); ?></th>
-                    <td>
-                        <?php
-                        if (is_plugin_active('wordpress-seo/wp-seo.php')) {
-                            echo '<span style="color: green;">' . __('✔ Yoast SEO detected and active.', 'blog-generator') . '</span>';
-                        } elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
-                            echo '<span style="color: green;">' . __('✔ RankMath detected and active.', 'blog-generator') . '</span>';
-                        } elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
-                            echo '<span style="color: green;">' . __('✔ All in One SEO detected and active.', 'blog-generator') . '</span>';
-                        } else {
-                            echo '<span style="color: orange;">' . __('⚠ No supported SEO plugin detected. Using WP default.', 'blog-generator') . '</span>';
-                        }
-                        ?>
                     </td>
                 </tr>
             </table>
-            <?php submit_button(); // ?>
+
+            <?php submit_button(); ?>
         </form>
     </div>
     <?php
 }
-
-/**
- * Registra as configurações no sistema do WordPress.
- */
-add_action('admin_init', function () {
-    register_setting('blog_generator_settings_group', 'gemini_api_token');
-    register_setting('blog_generator_settings_group', 'gemini_model');
-    register_setting('blog_generator_settings_group', 'ai_persona');
-    register_setting('blog_generator_settings_group', 'ai_tone');
-    register_setting('blog_generator_settings_group', 'ai_language');
-});
