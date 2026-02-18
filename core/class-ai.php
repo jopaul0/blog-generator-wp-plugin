@@ -19,9 +19,9 @@ abstract class AI
             "rules" => [
                 "focus_keyword_placement" => "The focus keyword must appear at the beginning of the SEO title, in the first 10% of the content, in the meta description, and in the URL. It should have a good density (appearing more than once, but not overused).",
                 "char_limits" => [
-                    "seo_title" => 58,
-                    "meta_description" => 156,
-                    "url_slug" => 68
+                    "seo_title" => "STRICT MAXIMUM 58 characters",
+                    "meta_description" => "STRICT MAXIMUM 156 characters",
+                    "url_slug" => "STRICT MAXIMUM 68 characters"
                 ],
                 "html_format" => "Content must be returned in HTML without the <body> tag, using only formatting tags like <p>, <h2>, <h3>, <ul>, and <table>.",
                 "table_format" => "Tables must be returned in HTML with inline CSS for basic styling."
@@ -47,8 +47,8 @@ abstract class AI
             "directives" => [
                 "tone" => $tone,
                 "seo_optimization" => $seo_standards,
-                "instructions" => "Create a complete article about the topic: $theme_user.",
-                "language_rule" => "IMPORTANT: Generate all content within the JSON fields (title, blocks, summary, tags, etc.) in $language." // Força o idioma de saída
+                "instructions" => "Create a complete article about the topic: $theme_user. Group related content: keep subheadings (h3) and their following paragraphs/lists in the same block whenever possible to avoid excessive fragmentation.",
+                "language_rule" => "IMPORTANT: Generate all content within the JSON fields (title, blocks, summary, tags, etc.) in $language."
             ],
             "constraints" => [
                 "min_words" => intval($min),

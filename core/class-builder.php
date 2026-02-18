@@ -51,7 +51,7 @@ class Builder
      * Detecta se o Elementor está instalado e ativo.
      * Retorna 'elementor' se ativo, caso contrário 'gutenberg'.
      */
-    private static function detect_preferred_editor()
+    public static function detect_preferred_editor()
     {
         if (!function_exists('is_plugin_active')) {
             require_once(ABSPATH . 'wp-admin/includes/plugin.php');
@@ -68,34 +68,64 @@ class Builder
     /**
      * Varre os blocos do artigo e decide como renderizá-los.
      */
+    /**
+     * Varre os blocos do artigo e agrupa conteúdos relacionados em widgets únicos.
+     */
     private static function process_article_content($data, $mode)
     {
         $html_output = '';
         $elementor_elements = [];
+        $current_text_accumulator = ''; // Acumulador para o widget de texto
 
         if (isset($data['article_blocks']) && is_array($data['article_blocks'])) {
             foreach ($data['article_blocks'] as $block_text) {
                 $block_text = trim($block_text);
                 if (empty($block_text)) continue;
 
-                // Identifica o tipo de bloco
-                if (strpos($block_text, '[TABLE_HERE]') !== false && !empty($data['table_html'])) {
-                    $type = 'table';
-                    $content = $data['table_html'];
-                } elseif (preg_match('/^<h([1-6])>(.*?)<\/h\1>/i', $block_text, $matches)) {
-                    $type = 'heading';
-                    $content = $matches[2];
-                    $level = $matches[1];
-                } else {
-                    $type = 'paragraph';
-                    $content = preg_replace('/^<p>(.*?)<\/p>$/i', '$1', $block_text);
-                }
+                // Identificadores de quebra de widget
+                $is_table = (strpos($block_text, '[TABLE_HERE]') !== false);
+                $is_h2 = preg_match('/^<h2>(.*?)<\/h2>/i', $block_text);
 
-                // Constrói conforme o editor
-                if ($mode === 'elementor') {
-                    $elementor_elements[] = self::build_elementor_widget_data($type, $content, isset($level) ? $level : 2);
+                // Se for H2 ou Tabela, precisamos fechar o widget de texto atual e abrir um novo elemento
+                if ($is_table || $is_h2) {
+
+                    // 1. Descarrega o texto acumulado antes da quebra (se houver)
+                    if (!empty($current_text_accumulator)) {
+                        if ($mode === 'elementor') {
+                            $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+                        } else {
+                            $html_output .= $current_text_accumulator;
+                        }
+                        $current_text_accumulator = '';
+                    }
+
+                    // 2. Processa a Tabela ou o H2
+                    if ($is_table && !empty($data['table_html'])) {
+                        if ($mode === 'elementor') {
+                            $elementor_elements[] = self::build_elementor_widget_data('table', $data['table_html'], 2);
+                        } else {
+                            $html_output .= $data['table_html'];
+                        }
+                    } elseif ($is_h2) {
+                        $content = preg_replace('/^<h2>(.*?)<\/h2>$/i', '$1', $block_text);
+                        if ($mode === 'elementor') {
+                            $elementor_elements[] = self::build_elementor_widget_data('heading', $content, 2);
+                        } else {
+                            $html_output .= "<h2>$content</h2>";
+                        }
+                    }
                 } else {
-                    $html_output .= self::render_gutenberg_block($type, $content, isset($level) ? $level : 2);
+                    // Se NÃO for H2 nem Tabela (ou seja: p, ul, li, h3, h4), acumula no mesmo bloco
+                    $current_text_accumulator .= $block_text . "\n";
+                }
+            }
+
+            // Descarrega qualquer conteúdo que sobrou no acumulador ao final do loop
+            if (!empty($current_text_accumulator)) {
+                if ($mode === 'elementor') {
+                    $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+                } else {
+                    $html_output .= $current_text_accumulator;
                 }
             }
         }
@@ -182,37 +212,61 @@ class Builder
     }
 
     /**
-     * Centraliza a integração com plugins de SEO.
+     * Detecta qual plugin de SEO está ativo.
      */
-    private static function save_seo_metadata($post_id, $data)
+    public static function detect_active_seo()
     {
         if (!function_exists('is_plugin_active')) {
             require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         }
 
-        // Yoast SEO
         if (is_plugin_active('wordpress-seo/wp-seo.php')) {
-            update_post_meta($post_id, '_yoast_wpseo_title', $data['seo_title']);
-            update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
-            update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
-        } // RankMath
-        elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
-            update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
-            update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
+            return 'yoast';
+        } elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
+            return 'rankmath';
+        } elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
+            return 'aioseo';
+        }
 
-            // Combina a palavra de foco com as secundárias em uma única string separada por vírgulas
-            $all_keywords = $data['focus_keyword'];
-            if (!empty($data['secondary_keywords'])) {
-                $secondary = is_array($data['secondary_keywords']) ? implode(', ', $data['secondary_keywords']) : $data['secondary_keywords'];
-                $all_keywords .= ', ' . $secondary;
-            }
+        return 'none';
+    }
 
-            update_post_meta($post_id, 'rank_math_focus_keyword', $all_keywords);
-        } // All in One SEO
-        elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
-            update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
-            update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
-            update_post_meta($post_id, '_aioseo_keywords', $data['focus_keyword']);
+    /**
+     * Centraliza a integração com plugins de SEO usando Switch Case.
+     */
+    private static function save_seo_metadata($post_id, $data)
+    {
+        // Chama a detecção do Controller
+        $seo_plugin = self::detect_active_seo();
+
+        switch ($seo_plugin) {
+            case 'yoast':
+                update_post_meta($post_id, '_yoast_wpseo_title', $data['seo_title']);
+                update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
+                update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
+                break;
+
+            case 'rankmath':
+                update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
+                update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
+
+                // Combina a palavra de foco com as secundárias em uma string separada por vírgulas
+                $all_keywords = $data['focus_keyword'];
+                if (!empty($data['secondary_keywords'])) {
+                    $secondary = is_array($data['secondary_keywords']) ? implode(', ', $data['secondary_keywords']) : $data['secondary_keywords'];
+                    $all_keywords .= ', ' . $secondary;
+                }
+                update_post_meta($post_id, 'rank_math_focus_keyword', $all_keywords);
+                break;
+
+            case 'aioseo':
+                update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
+                update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
+                update_post_meta($post_id, '_aioseo_keywords', $data['focus_keyword']);
+                break;
+
+            default:
+                break;
         }
     }
 }
