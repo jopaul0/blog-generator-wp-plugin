@@ -13,12 +13,16 @@ define('BLOG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 require_once BLOG_PLUGIN_PATH . 'admin/navigation.php';
 require_once BLOG_PLUGIN_PATH . 'core/class-api-gemini.php';
 require_once BLOG_PLUGIN_PATH . 'core/class-builder.php';
+require_once BLOG_PLUGIN_PATH . 'core/class-view-controller.php';
 
 // Função de ativar o idioma
 function blog_generator_load_textdomain() {
     load_plugin_textdomain('blog-generator', false, dirname(plugin_basename(__FILE__)) . '/languages');
 }
 add_action('init', 'blog_generator_load_textdomain');
+
+// Adicionando as submissões de formulários.
+add_action('admin_post_bg_generate_article', ['ViewController', 'handle_submission']);
 
 // Função de ativação
 function blog_generator_initialize()
