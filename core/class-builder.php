@@ -21,6 +21,7 @@ class Builder
         $post_args = [
             'post_title'   => sanitize_text_field($data['h1_title']),
             'post_content' => $processed_content['html'],
+            'post_excerpt' => sanitize_text_field($data['summary']),
             'post_status'  => 'draft',
             'post_type'    => 'post',
             'post_name'    => sanitize_title($data['url_slug']),
