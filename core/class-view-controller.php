@@ -41,11 +41,41 @@ class ViewController
     /**
      * Registra as configurações que o WP deve aceitar e salvar.
      */
-    public static function register_plugin_settings() {
+    public static function register_plugin_settings()
+    {
         register_setting('blog_generator_settings_group', 'gemini_api_token');
         register_setting('blog_generator_settings_group', 'gemini_model');
         register_setting('blog_generator_settings_group', 'ai_persona');
         register_setting('blog_generator_settings_group', 'ai_tone');
         register_setting('blog_generator_settings_group', 'ai_language');
     }
+
+    /**
+     * Detecta qual plugin de SEO está ativo no momento.
+     */
+    public static function detect_active_seo()
+    {
+        $seo_slug = Builder::detect_active_seo();
+
+        $seo_display_names = [
+            'yoast' => 'Yoast SEO',
+            'rankmath' => 'RankMath',
+            'aioseo' => 'All in One SEO',
+            'none' => __('None detected (WP Default)', 'blog-generator')
+        ];
+
+        $active_seo = $seo_display_names[$seo_slug];
+
+        return $active_seo;
+    }
+
+    /**
+     * Detecta se o Elementor está instalado e ativo.
+     * Retorna 'elementor' se ativo, caso contrário 'gutenberg'.
+     */
+    public static function detect_preferred_editor()
+    {
+        return ucfirst(Builder::detect_preferred_editor());
+    }
+
 }
