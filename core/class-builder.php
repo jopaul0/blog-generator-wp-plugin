@@ -19,12 +19,12 @@ class Builder
         $processed_content = self::process_article_content($data, $editor_mode);
 
         $post_args = [
-            'post_title'   => sanitize_text_field($data['h1_title']),
+            'post_title' => sanitize_text_field($data['h1_title']),
             'post_content' => $processed_content['html'],
             'post_excerpt' => sanitize_text_field($data['summary']),
-            'post_status'  => 'draft',
-            'post_type'    => 'post',
-            'post_name'    => sanitize_title($data['url_slug']),
+            'post_status' => 'draft',
+            'post_type' => 'post',
+            'post_name' => sanitize_title($data['url_slug']),
         ];
 
         $post_id = wp_insert_post($post_args);
@@ -193,12 +193,22 @@ class Builder
             update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
             update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
         }
+
         // RankMath
         elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
             update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
             update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
-            update_post_meta($post_id, 'rank_math_focus_keyword', $data['focus_keyword']);
+
+            // Combina a palavra de foco com as secundárias em uma única string separada por vírgulas
+            $all_keywords = $data['focus_keyword'];
+            if (!empty($data['secondary_keywords'])) {
+                $secondary = is_array($data['secondary_keywords']) ? implode(', ', $data['secondary_keywords']) : $data['secondary_keywords'];
+                $all_keywords .= ', ' . $secondary;
+            }
+
+            update_post_meta($post_id, 'rank_math_focus_keyword', $all_keywords);
         }
+
         // All in One SEO
         elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
             update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
