@@ -1,10 +1,5 @@
 <?php
 
-if (!defined('ABSPATH')) exit;
-
-require_once BLOG_PLUGIN_PATH . 'admin/generator-page.php';
-require_once BLOG_PLUGIN_PATH . 'admin/settings-page.php';
-
 add_action('admin_menu', function() {
     // Menu Principal
     add_menu_page(

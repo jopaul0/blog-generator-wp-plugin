@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) exit;
 
 define('BLOG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 
-require_once BLOG_PLUGIN_PATH . 'admin/navigation.php';
+require_once BLOG_PLUGIN_PATH . 'admin/index.php';
 require_once BLOG_PLUGIN_PATH . 'core/class-api-gemini.php';
 require_once BLOG_PLUGIN_PATH . 'core/class-builder.php';
 require_once BLOG_PLUGIN_PATH . 'core/class-view-controller.php';
