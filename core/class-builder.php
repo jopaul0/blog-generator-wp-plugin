@@ -93,9 +93,9 @@ class Builder
 
                 // Constrói conforme o editor
                 if ($mode === 'elementor') {
-                    $elementor_elements[] = self::build_elementor_widget_data($type, $content, $level ?? 2);
+                    $elementor_elements[] = self::build_elementor_widget_data($type, $content, isset($level) ? $level : 2);
                 } else {
-                    $html_output .= self::render_gutenberg_block($type, $content, $level ?? 2);
+                    $html_output .= self::render_gutenberg_block($type, $content, isset($level) ? $level : 2);
                 }
             }
         }
@@ -167,7 +167,10 @@ class Builder
                         'id' => substr(md5(uniqid()), 0, 7),
                         'elType' => 'column',
                         'elements' => $elements,
-                        'settings' => ['_column_size' => 100]
+                        'settings' => [
+                            '_column_size' => 100,
+                            'widgets_spacing' => ['size' => 15]
+                        ]
                     ]
                 ]
             ]
@@ -192,9 +195,7 @@ class Builder
             update_post_meta($post_id, '_yoast_wpseo_title', $data['seo_title']);
             update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
             update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
-        }
-
-        // RankMath
+        } // RankMath
         elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
             update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
             update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
@@ -207,9 +208,7 @@ class Builder
             }
 
             update_post_meta($post_id, 'rank_math_focus_keyword', $all_keywords);
-        }
-
-        // All in One SEO
+        } // All in One SEO
         elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
             update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
             update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
