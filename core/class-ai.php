@@ -38,7 +38,7 @@ abstract class AI
             "meta_description" => "Meta description",
             "url_slug" => "User-friendly URL slug",
             "focus_keyword" => "Main focus keyword",
-            "secondary_keywords" => "List of secondary keywords",
+            "secondary_keywords" => "List of 4 secondary keywords",
             "tags" => "Tags separated by commas"
         ];
 

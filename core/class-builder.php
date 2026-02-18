@@ -19,11 +19,12 @@ class Builder
         $processed_content = self::process_article_content($data, $editor_mode);
 
         $post_args = [
-            'post_title'   => sanitize_text_field($data['h1_title']),
+            'post_title' => sanitize_text_field($data['h1_title']),
             'post_content' => $processed_content['html'],
-            'post_status'  => 'draft',
-            'post_type'    => 'post',
-            'post_name'    => sanitize_title($data['url_slug']),
+            'post_excerpt' => sanitize_text_field($data['summary']),
+            'post_status' => 'draft',
+            'post_type' => 'post',
+            'post_name' => sanitize_title($data['url_slug']),
         ];
 
         $post_id = wp_insert_post($post_args);
@@ -92,9 +93,9 @@ class Builder
 
                 // Constrói conforme o editor
                 if ($mode === 'elementor') {
-                    $elementor_elements[] = self::build_elementor_widget_data($type, $content, $level ?? 2);
+                    $elementor_elements[] = self::build_elementor_widget_data($type, $content, isset($level) ? $level : 2);
                 } else {
-                    $html_output .= self::render_gutenberg_block($type, $content, $level ?? 2);
+                    $html_output .= self::render_gutenberg_block($type, $content, isset($level) ? $level : 2);
                 }
             }
         }
@@ -166,7 +167,10 @@ class Builder
                         'id' => substr(md5(uniqid()), 0, 7),
                         'elType' => 'column',
                         'elements' => $elements,
-                        'settings' => ['_column_size' => 100]
+                        'settings' => [
+                            '_column_size' => 100,
+                            'widgets_spacing' => ['size' => 15]
+                        ]
                     ]
                 ]
             ]
@@ -191,14 +195,20 @@ class Builder
             update_post_meta($post_id, '_yoast_wpseo_title', $data['seo_title']);
             update_post_meta($post_id, '_yoast_wpseo_metadesc', $data['meta_description']);
             update_post_meta($post_id, '_yoast_wpseo_focuskw', $data['focus_keyword']);
-        }
-        // RankMath
+        } // RankMath
         elseif (is_plugin_active('seo-by-rank-math/rank-math.php')) {
             update_post_meta($post_id, 'rank_math_title', $data['seo_title']);
             update_post_meta($post_id, 'rank_math_description', $data['meta_description']);
-            update_post_meta($post_id, 'rank_math_focus_keyword', $data['focus_keyword']);
-        }
-        // All in One SEO
+
+            // Combina a palavra de foco com as secundárias em uma única string separada por vírgulas
+            $all_keywords = $data['focus_keyword'];
+            if (!empty($data['secondary_keywords'])) {
+                $secondary = is_array($data['secondary_keywords']) ? implode(', ', $data['secondary_keywords']) : $data['secondary_keywords'];
+                $all_keywords .= ', ' . $secondary;
+            }
+
+            update_post_meta($post_id, 'rank_math_focus_keyword', $all_keywords);
+        } // All in One SEO
         elseif (is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php')) {
             update_post_meta($post_id, '_aioseo_title', $data['seo_title']);
             update_post_meta($post_id, '_aioseo_description', $data['meta_description']);
