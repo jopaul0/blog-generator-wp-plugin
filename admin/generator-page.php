@@ -52,11 +52,11 @@ function render_blog_generator()
                 </tr>
                 <tr>
                     <th scope="row"><label for="min_words"><?php _e('Min Words', 'blog-generator'); ?></label></th>
-                    <td><input name="min_words" type="number" id="min_words" value="500" class="small-text"></td>
+                    <td><input name="min_words" type="number" id="min_words" value="600" class="small-text"></td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="max_words"><?php _e('Max Words', 'blog-generator'); ?></label></th>
-                    <td><input name="max_words" type="number" id="max_words" value="1000" class="small-text"></td>
+                    <td><input name="max_words" type="number" id="max_words" value="1200" class="small-text"></td>
                 </tr>
             </table>
             <?php submit_button(__('Generate Article', 'blog-generator'), 'primary', 'generate_action'); ?>
