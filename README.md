@@ -6,13 +6,13 @@
 ![PHP](https://img.shields.io/badge/php-7.4%2B-blue)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue)
 
-## 🚀 Sobre o Projeto (v0.2)
+## Sobre o Projeto (v0.2)
 
 O **Blog Generator** é uma solução profissional para WordPress que automatiza a criação de artigos completos (Título, Conteúdo, Resumo, SEO e Tags) via Google Gemini API. A versão 0.2 introduz uma arquitetura **MVC (Model-View-Controller)** robusta e suporte inteligente a editores visuais.
 
 ---
 
-## ✨ Novidades da Versão 0.2
+## Novidades da Versão 0.2
 
 - **Arquitetura MVC**: Separação clara de responsabilidades com as classes `ViewController`, `Builder` e `AI`.
 - **Detecção Automática de Editor**: O plugin identifica se o **Elementor** está ativo e gera o post com widgets nativos do construtor. Caso contrário, utiliza o **Gutenberg**.
@@ -22,7 +22,7 @@ O **Blog Generator** é uma solução profissional para WordPress que automatiza
 
 ---
 
-## 🛠️ Tecnologias e Arquitetura
+## Tecnologias e Arquitetura
 
 - **Backend**: PHP 7.4+ orientado a objetos.
 - **IA**: Google Gemini API (Modelos 1.5 Flash/Pro e 2.0 suportados via configurações).
@@ -30,7 +30,7 @@ O **Blog Generator** é uma solução profissional para WordPress que automatiza
 
 ---
 
-## 📂 Estrutura de Pastas
+## Estrutura de Pastas
 
 ```bash
 gerador-gemini-onvale/
@@ -43,7 +43,7 @@ gerador-gemini-onvale/
 
 ---
 
-## ⚙️ Como Instalar e Configurar
+## Como Instalar e Configurar
 
 1. Faça o download do repositório e extraia em wp-content/plugins/blog-generator-gemini.
 2. Ative o plugin no painel administrativo do WordPress.
@@ -54,7 +54,7 @@ gerador-gemini-onvale/
 
 ---
 
-## 📝 Funcionalidades de IA
+## Funcionalidades de IA
 O plugin instrui a IA a retornar um objeto JSON estrito contendo:
 
 * Título H1 e Slug de URL otimizada.
