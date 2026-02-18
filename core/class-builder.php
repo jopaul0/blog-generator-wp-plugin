@@ -72,31 +72,52 @@ class Builder
     {
         $html_output = '';
         $elementor_elements = [];
+        $current_text_accumulator = ''; // Acumulador para o widget de texto
 
         if (isset($data['article_blocks']) && is_array($data['article_blocks'])) {
             foreach ($data['article_blocks'] as $block_text) {
                 $block_text = trim($block_text);
                 if (empty($block_text)) continue;
 
-                // Identifica o tipo de bloco
-                if (strpos($block_text, '[TABLE_HERE]') !== false && !empty($data['table_html'])) {
-                    $type = 'table';
-                    $content = $data['table_html'];
-                } elseif (preg_match('/^<h([1-6])>(.*?)<\/h\1>/i', $block_text, $matches)) {
-                    $type = 'heading';
-                    $content = $matches[2];
-                    $level = $matches[1];
-                } else {
-                    $type = 'paragraph';
-                    $content = preg_replace('/^<p>(.*?)<\/p>$/i', '$1', $block_text);
-                }
+                // 1. Identifica se é Tabela ou Título Principal (H2)
+                $is_table = (strpos($block_text, '[TABLE_HERE]') !== false);
+                $is_h2 = preg_match('/^<h2>(.*?)<\/h2>/i', $block_text);
 
-                // Constrói conforme o editor
-                if ($mode === 'elementor') {
-                    $elementor_elements[] = self::build_elementor_widget_data($type, $content, isset($level) ? $level : 2);
+                if ($is_table || $is_h2) {
+                    // Se temos texto acumulado, descarrega no widget antes de processar a tabela/H2
+                    if (!empty($current_text_accumulator) && $mode === 'elementor') {
+                        $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
+                        $current_text_accumulator = '';
+                    }
+
+                    if ($is_table && !empty($data['table_html'])) {
+                        if ($mode === 'elementor') {
+                            $elementor_elements[] = self::build_elementor_widget_data('table', $data['table_html'], 2);
+                        } else {
+                            $html_output .= self::render_gutenberg_block('table', $data['table_html'], 2);
+                        }
+                    } else {
+                        // É um H2
+                        $content = preg_replace('/^<h2>(.*?)<\/h2>$/i', '$1', $block_text);
+                        if ($mode === 'elementor') {
+                            $elementor_elements[] = self::build_elementor_widget_data('heading', $content, 2);
+                        } else {
+                            $html_output .= self::render_gutenberg_block('heading', $content, 2);
+                        }
+                    }
                 } else {
-                    $html_output .= self::render_gutenberg_block($type, $content, isset($level) ? $level : 2);
+                    // É parágrafo, lista, H3, H4... acumula tudo no mesmo "bloco de texto"
+                    if ($mode === 'elementor') {
+                        $current_text_accumulator .= $block_text . "\n";
+                    } else {
+                        $html_output .= $block_text . "\n";
+                    }
                 }
+            }
+
+            // Descarrega o que sobrou no acumulador
+            if (!empty($current_text_accumulator) && $mode === 'elementor') {
+                $elementor_elements[] = self::build_elementor_widget_data('paragraph', $current_text_accumulator, 2);
             }
         }
 
