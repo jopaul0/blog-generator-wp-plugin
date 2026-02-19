@@ -26,9 +26,9 @@ O **Blog Generator** é uma solução profissional para WordPress que automatiza
 
 Para detalhes técnicos e histórico de mudanças, consulte nossa pasta de documentação:
 
-- [v0.1 - Funcionalidade Base](docs/v0.1-funcionalidade-base.md)
-- [v0.2 - Refatoração MVC](docs/v0.2-refatoracao-mvc.md)
-- [v0.3 - Compatibilidade e SEO](docs/v0.3-compatibilidade-e-seo.md)
+- [v0.1 - Funcionalidade Base](docs/versions/v0/v0-1/README.md)
+- [v0.2 - Refatoração MVC](docs/versions/v0/v0-2/README.md)
+- [v0.3 - Compatibilidade e SEO](docs/versions/v0/v0-3/README.md)
 
 ---
 
