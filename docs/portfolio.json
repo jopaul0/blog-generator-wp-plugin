@@ -1,0 +1,26 @@
+{
+    "id": "blog-generator-wp",
+    "title": "Blog Generator for WP",
+    "short_description": "Plugin WordPress para a geração de blogs.",
+    "full_description": "O Blog Generator é uma solução profissional para WordPress que automatiza a criação de artigos completos (Título, Conteúdo, Resumo, SEO e Tags) via Google Gemini API.",
+    "technologies": [
+        "PHP",
+        "WordPress",
+        "Gemini API"
+    ],
+    "links": {
+        "github": "https://github.com/jopaul0/blog-generator-wp-plugin",
+        "video": "",
+        "demo": ""
+    },
+    "images": [
+        {
+            "url": "https://raw.githubusercontent.com/jopaul0/blog-generator-wp-plugin/main/docs/screenshots/form-generator.png",
+            "alt": "Formulário"
+        },
+        {
+            "url": "https://raw.githubusercontent.com/jopaul0/blog-generator-wp-plugin/main/docs/screenshots/settings.png",
+            "alt": "Configurações"
+        }
+    ]
+}
